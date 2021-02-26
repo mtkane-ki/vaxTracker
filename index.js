@@ -50,7 +50,7 @@ bot.on("message", async (msg) => {
     vaxEmbed.setTitle("Current CDC Vaccination Stats");
     const usDelta = data.usTotal - previousCDCFile.usTotal;
     vaxEmbed.addField(
-      "Total Second Doses in US:",
+      "Total Doses in US:",
       `${data.usTotal.toLocaleString()} (${percentage(
         data.usTotal,
         popData.totalPopulation
@@ -71,7 +71,7 @@ bot.on("message", async (msg) => {
       const stateDelta =
         stateInfoItem.totalVaccinated - prevStateInfo.totalVaccinated;
       vaxEmbed.addField(
-        `${stateInfoItem.state} total second doses:`,
+        `${stateInfoItem.state} total doses:`,
         `${stateInfoItem.totalVaccinated.toLocaleString()} (${percent.toString()}%) +${stateDelta.toLocaleString()}`
       );
     });

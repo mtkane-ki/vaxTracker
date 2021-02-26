@@ -37,16 +37,19 @@ function chunk(array, size) {
     });
   
    
-    const stateSeparateData = await chunk(data, 9);
+    const stateSeparateData = await chunk(data, 5);
     
+    // console.log(stateSeparateData)
     const stateData = stateSeparateData.map((item) => {
       const stateObj = {
         state: item[0],
-        totalVaccinated: Number(item[7]), //change to 7 for 2 doses
+        totalVaccinated: Number(item[1]), //changing for total doses
       };
       return stateObj;
     });
     
+// console.log(stateData)
+
     const statesTotalVax = stateData.map((item) => Number(item.totalVaccinated));
    
     const usTotalVax = statesTotalVax.reduce((total, amount) => total + amount);
