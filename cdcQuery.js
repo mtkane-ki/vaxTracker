@@ -2,15 +2,6 @@ const puppeteer = require("puppeteer-extra");
 const stealthPlugin = require("puppeteer-extra-plugin-stealth");
 const fileActions = require("./fileActions.js");
 
-function chunk(array, size) {
-  const chunked_arr = [];
-  let copied = [...array]; // ES6 destructuring
-  const numOfChild = Math.ceil(copied.length / size); // Round up to the nearest integer
-  for (let i = 0; i < numOfChild; i++) {
-    chunked_arr.push(copied.splice(0, size));
-  }
-  return chunked_arr;
-}
 
 async function getCuratedCDCData(desiredStates, downloadPath) {
   puppeteer.use(stealthPlugin());
@@ -25,11 +16,7 @@ async function getCuratedCDCData(desiredStates, downloadPath) {
     document.querySelector("#vaccinations-table-toggle").click();
   });
 
-  //id="btnVaccinationsExport"
 
-  // const button = await page.waitForFunction( () => {
-  //     return document.getElementById("btnVaccinationsExport")
-  //   })
 
   const client = await page.target().createCDPSession();
 
@@ -43,18 +30,11 @@ async function getCuratedCDCData(desiredStates, downloadPath) {
   });
 
   await page.waitForTimeout(2000);
-  // await page.waitForFunction(() => {
-  //   return document.querySelectorAll("table tr td").length > 0;
-  // });
 
-  // const data = await page.evaluate(() => {
-  //   const tds = Array.from(document.querySelectorAll("table tr td"));
-  //   return tds.map((td) => td.innerText);
-  // });
 
   const cdcData = await fileActions.LoadDownloadedCDCFile(downloadPath);
 
-  // const stateSeparateData = await chunk(data, 5);
+
 
   const stateData = cdcData.map((item) => {
     const stateObj = {
@@ -69,16 +49,7 @@ async function getCuratedCDCData(desiredStates, downloadPath) {
     return stateObj;
   });
 
-  // console.log(stateSeparateData)
-  // const stateData = stateSeparateData.map((item) => {
-  //   const stateObj = {
-  //     state: item[0],
-  //     totalVaccinated: Number(item[1]), //changing for total doses
-  //   };
-  //   return stateObj;
-  // });
 
-  // console.log(stateData)
 
   const statesTotalVax = stateData.map((item) => Number(item.totalVaccinated));
 
@@ -102,8 +73,6 @@ async function getCuratedCDCData(desiredStates, downloadPath) {
   return curatedData;
 }
 
-// debug
 
-//
 
 module.exports = { getCuratedCDCData };
