@@ -2,7 +2,6 @@ const puppeteer = require("puppeteer-extra");
 const stealthPlugin = require("puppeteer-extra-plugin-stealth");
 const fileActions = require("./fileActions.js");
 
-
 async function getCuratedCDCData(desiredStates, downloadPath) {
   puppeteer.use(stealthPlugin());
   const browser = await puppeteer.launch({ headless: true });
@@ -15,8 +14,6 @@ async function getCuratedCDCData(desiredStates, downloadPath) {
   await page.evaluate(() => {
     document.querySelector("#vaccinations-table-toggle").click();
   });
-
-
 
   const client = await page.target().createCDPSession();
 
@@ -31,10 +28,7 @@ async function getCuratedCDCData(desiredStates, downloadPath) {
 
   await page.waitForTimeout(2000);
 
-
   const cdcData = await fileActions.LoadDownloadedCDCFile(downloadPath);
-
-
 
   const stateData = cdcData.map((item) => {
     const stateObj = {
@@ -48,8 +42,6 @@ async function getCuratedCDCData(desiredStates, downloadPath) {
     };
     return stateObj;
   });
-
-
 
   const statesTotalVax = stateData.map((item) => Number(item.totalVaccinated));
 
@@ -72,7 +64,5 @@ async function getCuratedCDCData(desiredStates, downloadPath) {
 
   return curatedData;
 }
-
-
 
 module.exports = { getCuratedCDCData };

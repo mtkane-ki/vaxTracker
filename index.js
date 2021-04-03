@@ -41,7 +41,6 @@ bot.on("message", async (msg) => {
     }
     const previousCDCFile = fileActions.LoadPreviousCDCFile();
 
-    
     const vaxEmbed = new Discord.MessageEmbed();
     vaxEmbed.setColor("#0099ff");
     vaxEmbed.setTitle("Current CDC Vaccination Stats");
@@ -55,7 +54,6 @@ bot.on("message", async (msg) => {
         .toFixed(2)
         .toString()}%) +${usDelta.toLocaleString()}`
     );
-   
 
     data.stateInfo.forEach((stateInfoItem) => {
       const percent = stateInfoItem.percentPopVaccinated;
