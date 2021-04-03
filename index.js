@@ -27,7 +27,6 @@ bot.on("message", async (msg) => {
   if (msg.author.bot) return; //ignore messages bot itself sent
   if (!msg.content.startsWith(prefix)) return; //ignore messages that aren't commands
 
- 
   const commandBody = msg.content.slice(prefix.length); //remove prefix from command string
   const args = commandBody.split(" "); //split string of command statements into an array
   const command = args.shift().toLowerCase(); //normalize strings
@@ -43,12 +42,12 @@ bot.on("message", async (msg) => {
 
     if (!util.isDeepStrictEqual(data, currentCDCFile)) {
       fileActions.writeCDCFiles(data, currentCDCFile); //what we last thought current to previous, write out new data
-    } //determine if actually current. 
+    } //determine if actually current.
 
     const previousCDCFile = fileActions.LoadPreviousCDCFile(); //get the vax data on disk we currently know as old
 
     const vaxEmbed = new Discord.MessageEmbed(); //create instance of new discord embed object
-    vaxEmbed.setColor("#0099ff"); //set color of sidebar 
+    vaxEmbed.setColor("#0099ff"); //set color of sidebar
     vaxEmbed.setTitle("Current CDC Vaccination Stats"); //set embed title
     const usDelta = data.usTotal - previousCDCFile.usTotal; //calculate vaccine increase for total population
     vaxEmbed.addField(
@@ -56,7 +55,7 @@ bot.on("message", async (msg) => {
       `${data.usTotal.toLocaleString()} (${percentage(
         data.usTotal,
         popData.totalPopulation
-      ) 
+      )
         .toFixed(2)
         .toString()}%) +${usDelta.toLocaleString()}` //pretty print data for display of total pop and percentage of total pop
     ); //add an embed field
