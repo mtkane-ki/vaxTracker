@@ -12,7 +12,7 @@ function chunk(array, size) {
   return chunked_arr;
 }
 
-async function getCuratedCDCData(desiredStates) {
+async function getCuratedCDCData(desiredStates, downloadPath) {
   puppeteer.use(stealthPlugin());
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
@@ -28,17 +28,19 @@ async function getCuratedCDCData(desiredStates) {
   //id="btnVaccinationsExport"
 
   // const button = await page.waitForFunction( () => {
-  //     return document.getElementById("btnVaccinationsExport")   
+  //     return document.getElementById("btnVaccinationsExport")
   //   })
 
   const client = await page.target().createCDPSession();
 
-  client.send('Page.setDownloadBehavior', {behavior: 'allow', downloadPath: 'f:\\newdocs\\scripts\\repos\\vaxTracker\\vaxTracker\\cdcDownloads\\'})
+  client.send("Page.setDownloadBehavior", {
+    behavior: "allow",
+    downloadPath: downloadPath,
+  });
 
-
-  await page.evaluate( () =>{
-    document.getElementById("btnVaccinationsExport").click()
-  })
+  await page.evaluate(() => {
+    document.getElementById("btnVaccinationsExport").click();
+  });
 
   await page.waitForTimeout(2000);
   // await page.waitForFunction(() => {
@@ -50,21 +52,22 @@ async function getCuratedCDCData(desiredStates) {
   //   return tds.map((td) => td.innerText);
   // });
 
-  const cdcData = await fileActions.LoadDownloadedCDCFile()
-
+  const cdcData = await fileActions.LoadDownloadedCDCFile(downloadPath);
 
   // const stateSeparateData = await chunk(data, 5);
 
   const stateData = cdcData.map((item) => {
-   
     const stateObj = {
       state: item["State/Territory/Federal Entity"],
-      totalVaccinated: Number(item["People Fully Vaccinated by State of Residence"]),
-      percentPopVaccinated: Number(item["Percent of Total Pop Fully Vaccinated by State of Residence"]) 
+      totalVaccinated: Number(
+        item["People Fully Vaccinated by State of Residence"]
+      ),
+      percentPopVaccinated: Number(
+        item["Percent of Total Pop Fully Vaccinated by State of Residence"]
+      ),
     };
     return stateObj;
   });
-
 
   // console.log(stateSeparateData)
   // const stateData = stateSeparateData.map((item) => {
@@ -95,14 +98,11 @@ async function getCuratedCDCData(desiredStates) {
     usTotal: Number(usTotalVax),
   };
   browser.close();
-  
+
   return curatedData;
 }
 
 // debug
-
-
-
 
 //
 

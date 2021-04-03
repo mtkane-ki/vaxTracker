@@ -20,17 +20,16 @@ function LoadCurrentCDCFile() {
   return JSON.parse(fileRaw);
 }
 
-async function LoadDownloadedCDCFile() {
-  const fileRaw = await fsSync.readFile(
-    "./cdcDownloads/covid19_vaccinations_in_the_united_states.csv",
-    (err, data) => {
-      if (err) {
-        throw err;
-      }
+async function LoadDownloadedCDCFile(downloadPath) {
+  const filePath = `${downloadPath}covid19_vaccinations_in_the_united_states.csv`;
+  const fileRaw = await fsSync.readFile(filePath, (err, data) => {
+    if (err) {
+      throw err;
     }
-  );
+  });
+
   const csvData = csvParse(fileRaw, { columns: true, from_line: 4 });
-  DeleteFile("f:\\newdocs\\scripts\\repos\\vaxTracker\\vaxTracker\\cdcDownloads\\covid19_vaccinations_in_the_united_states.csv");
+  DeleteFile(filePath);
   return csvData;
 }
 

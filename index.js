@@ -5,6 +5,7 @@ const fileActions = require("./fileActions");
 const censusQuery = require("./censusQuery");
 const bot = new Discord.Client();
 const TOKEN = process.env.TOKEN;
+const downloadPath = String.raw`${process.env.DOWNLOADPATH}`;
 const util = require("util");
 
 const prefix = "!";
@@ -26,13 +27,12 @@ bot.on("message", async (msg) => {
   const args = commandBody.split(" ");
   const command = args.shift().toLowerCase();
 
-  if (
-    command === "vaxtrack"
-  ) {
+  if (command === "vaxtrack") {
     const stateList = fileActions.LoadDesiredStates();
     var popData = await censusQuery.populationQuery(stateList.Census);
     const data = await cdcQuery.getCuratedCDCData(
-      (await fileActions.LoadDesiredStates()).CDC
+      (await fileActions.LoadDesiredStates()).CDC,
+      downloadPath
     );
     const currentCDCFile = await fileActions.LoadCurrentCDCFile();
 
@@ -61,7 +61,7 @@ bot.on("message", async (msg) => {
     // console.log(data)
 
     data.stateInfo.forEach((stateInfoItem) => {
-      const percent = stateInfoItem.percentPopVaccinated
+      const percent = stateInfoItem.percentPopVaccinated;
       const stateIterator = stateInfoItem.state;
       const prevStateInfo = previousCDCFile.stateInfo.find(
         (previousState) => previousState.state === stateIterator
