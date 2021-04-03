@@ -50,7 +50,7 @@ bot.on("message", async (msg) => {
     vaxEmbed.setTitle("Current CDC Vaccination Stats");
     const usDelta = data.usTotal - previousCDCFile.usTotal;
     vaxEmbed.addField(
-      "Total Doses in US:",
+      "Total Completed Courses in US:",
       `${data.usTotal.toLocaleString()} (${percentage(
         data.usTotal,
         popData.totalPopulation
@@ -58,12 +58,10 @@ bot.on("message", async (msg) => {
         .toFixed(2)
         .toString()}%) +${usDelta.toLocaleString()}`
     );
+    // console.log(data)
 
     data.stateInfo.forEach((stateInfoItem) => {
-      const percent = percentage(
-        stateInfoItem.totalVaccinated,
-        popData.statePops.get(stateInfoItem.state)
-      ).toFixed(2);
+      const percent = stateInfoItem.percentPopVaccinated
       const stateIterator = stateInfoItem.state;
       const prevStateInfo = previousCDCFile.stateInfo.find(
         (previousState) => previousState.state === stateIterator
@@ -71,7 +69,7 @@ bot.on("message", async (msg) => {
       const stateDelta =
         stateInfoItem.totalVaccinated - prevStateInfo.totalVaccinated;
       vaxEmbed.addField(
-        `${stateInfoItem.state} total doses:`,
+        `${stateInfoItem.state} total completed courses:`,
         `${stateInfoItem.totalVaccinated.toLocaleString()} (${percent.toString()}%) +${stateDelta.toLocaleString()}`
       );
     });
