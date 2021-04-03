@@ -29,7 +29,7 @@ bot.on("message", async (msg) => {
 
   if (command === "vaxtrack") {
     const stateList = fileActions.LoadDesiredStates();
-    var popData = await censusQuery.populationQuery(stateList.Census);
+    const popData = await censusQuery.populationQuery(stateList.Census);
     const data = await cdcQuery.getCuratedCDCData(
       (await fileActions.LoadDesiredStates()).CDC,
       downloadPath
