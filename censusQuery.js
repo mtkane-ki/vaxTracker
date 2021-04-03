@@ -1,11 +1,10 @@
-const dotenv = require("dotenv").config();
 const axios = require("axios");
 const fileActions = require("./fileActions");
 
-const censusKey = process.env.CENSUSKEY;
+
 const apiURL = "http://api.census.gov";
 
-async function populationQuery() {
+async function populationQuery(censusKey) {
   const getInstance = axios.create({
     baseURL: `${apiURL}`,
     timeout: 5000,
