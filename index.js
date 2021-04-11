@@ -34,6 +34,7 @@ bot.on("message", async (msg) => {
   if (command === "vaxtrack") {
     const stateList = fileActions.LoadDesiredStates(); //fetch the states we want to display
     const popData = await censusQuery.populationQuery(censusKey); //fetch us total population
+   
     const data = await cdcQuery.getCuratedCDCData(
       (await fileActions.LoadDesiredStates()).CDC,
       downloadPath
@@ -59,7 +60,7 @@ bot.on("message", async (msg) => {
         .toFixed(2)
         .toString()}%) +${usDelta.toLocaleString()}` //pretty print data for display of total pop and percentage of total pop
     ); //add an embed field
-
+      
     data.stateInfo.forEach((stateInfoItem) => {
       const percent = stateInfoItem.percentPopVaccinated; //get percentage data
       const stateIterator = stateInfoItem.state; //get state name

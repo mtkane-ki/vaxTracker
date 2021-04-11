@@ -28,8 +28,8 @@ async function LoadDownloadedCDCFile(downloadPath) {
     }
   });// pull in csv data synchronously
 
-  const csvData = csvParse(fileRaw, { columns: true, from_line: 4 }); //parse data into js object
-  DeleteFile(filePath); //delete temp file
+  const csvData = csvParse(fileRaw, { columns: true, from_line: 3 }); //parse data into js object
+  DeleteFile(filePath); //delete temp file  
   return csvData;
 } //pull in the csv file, parse it, and delete it
 
