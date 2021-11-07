@@ -48,25 +48,31 @@ async function getCuratedCDCData(desiredStates, downloadPath) {
 
   const statesTotalVax = stateData.map((item) => Number(item.totalVaccinated)); //convert vax data from string to number type
 
-  const usTotalVax = statesTotalVax.reduce((total, amount) => total + amount); // aggregate states vax numbers to US total
+  // const usTotalVax = statesTotalVax.reduce((total, amount) => total + amount); // aggregate states vax numbers to US total
 
   const desiredStateData = []; //empty array to hold desired state data
+
+  const usTotalVax = stateData.filter(item => {
+    return item.state === "United States"
+  })
+  // console.log(usTotalVax)
 
 
   for (i = 0; i < desiredStates.length; i++) {
     stateData.forEach((item) => {
       if (item.state === desiredStates[i]) {
         desiredStateData.push(item);
-      }
+      }     
     });
   } //load desired state data array
 
   const curatedData = {
     stateInfo: desiredStateData,
-    usTotal: Number(usTotalVax),
+    usTotal: Number(usTotalVax[0].totalVaccinated),
+    usPercent: Number(usTotalVax[0].percentPopVaccinated)
   }; //package data
 
-  browser.close(); //close chromium
+  await browser.close(); //close chromium
 
   return curatedData; //send it
 } //end fetch and transform logic

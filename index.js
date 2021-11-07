@@ -2,12 +2,10 @@ const dotenv = require("dotenv").config();
 const Discord = require("discord.js"); //library to make discord communication super easy
 const cdcQuery = require("./cdcQuery"); //module which is responsible for acquiring and transoforming vaccine data
 const fileActions = require("./fileActions"); //module which is responsible for file system actions
-const censusQuery = require("./censusQuery"); //module which is responsible for fetching population data
 const util = require("util"); //needed for deep strict comparision function
 
 const TOKEN = process.env.TOKEN; //access token to initialize websocket with discord
-const censusKey = process.env.CENSUSKEY; //api key for US Census API
-const downloadPath = String.raw`${process.env.DOWNLOADPATH}`; //path where census data csv file will be stored temporarily
+const downloadPath = String.raw`${process.env.DOWNLOADPATH}`; //path where cdc data csv file will be stored temporarily
 
 const bot = new Discord.Client(); //initialize instance of discord client class
 const prefix = "!"; //symbol which must prepend a command received by the discord client
@@ -32,11 +30,12 @@ bot.on("message", async (msg) => {
   const command = args.shift().toLowerCase(); //normalize strings
 
   if (command === "vaxtrack") {
-    const stateList = fileActions.LoadDesiredStates(); //fetch the states we want to display
-    const popData = await censusQuery.populationQuery(censusKey); //fetch us total population
-   
+ 
+
     const data = await cdcQuery.getCuratedCDCData(
-      (await fileActions.LoadDesiredStates()).CDC,
+      (
+        await fileActions.LoadDesiredStates()
+      ).CDC,
       downloadPath
     ); //trigger download of CDC vaccine csv file, parse, and transform data
     const currentCDCFile = await fileActions.LoadCurrentCDCFile(); //get the vax data on disk we last thought current
@@ -51,16 +50,12 @@ bot.on("message", async (msg) => {
     vaxEmbed.setColor("#0099ff"); //set color of sidebar
     vaxEmbed.setTitle("Current CDC Vaccination Stats"); //set embed title
     const usDelta = data.usTotal - previousCDCFile.usTotal; //calculate vaccine increase for total population
+   
     vaxEmbed.addField(
       "Total Completed Courses in US:",
-      `${data.usTotal.toLocaleString()} (${percentage(
-        data.usTotal,
-        popData.totalPopulation
-      )
-        .toFixed(2)
-        .toString()}%) +${usDelta.toLocaleString()}` //pretty print data for display of total pop and percentage of total pop
+      `${data.usTotal.toLocaleString()} (${data.usPercent.toString()}%) +${usDelta.toLocaleString()}` //pretty print data for display of total pop and percentage of total pop
     ); //add an embed field
-      
+
     data.stateInfo.forEach((stateInfoItem) => {
       const percent = stateInfoItem.percentPopVaccinated; //get percentage data
       const stateIterator = stateInfoItem.state; //get state name
